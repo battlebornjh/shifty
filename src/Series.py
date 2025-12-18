@@ -4,7 +4,7 @@ import SeriesUtils as util
 import SeriesObjects as obj
 import DbWriter as db
 
-def search_series(dataSet, corNumber, minShift, size):
+def search_series(guid, dataSet, corNumber, minShift, size):
     print(f"running: {size}")
     #logging = True
     logging = False
@@ -75,4 +75,4 @@ def search_series(dataSet, corNumber, minShift, size):
 
     print("")
     for cor in (posCors + negCors):
-        db.insertShiftFound(cor)
+        db.insertShiftFound(guid, cor)

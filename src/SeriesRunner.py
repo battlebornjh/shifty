@@ -1,9 +1,7 @@
-import time
 import Series
 import multiprocessing
-
-start_time = time.time()
-
+import uuid
+import DbWriter as db
                                                                               ################################################### 26   
 dataSet = [[3,5,4,2,1,5,5,5,2,3,4,4,4,1,2,3,4,5,2,1,1,1,1,3,3,2,1,1,1,1,5,2,3,4,5,9,5,7,3,1,1,2,8,3,1,5,5,5,4,1,1,5,5,5,1,1,5,5,6,4,1,3,1],#0
            [5,5,5,8,5,1,1,0,5,5,5,4,2,3,3,5,5,2,2,2,3,5,3,2,4,4,4,3,8,8,2,5,6,6,4,8,1,1,5,6,1,2,3,2,5,4,5,4,6,6,3,1,2,2,5,8,1,2,2,0,5,1,1],#1
@@ -20,20 +18,24 @@ dataSet = [[3,5,4,2,1,5,5,5,2,3,4,4,4,1,2,3,4,5,2,1,1,1,1,3,3,2,1,1,1,1,5,2,3,4,
            [7,7,7,7,7,4,7,7,7,7,4,7,9,8,7,6,5,4,4,7,7,7,7,4,7,7,7,7,4,7,1,2,5,8,5,5,2,2,2,6,5,4,5,5,6,5,5,5,4,5,7,4,5,4,7,5,4,5,9,6,9,6,9]]#11
 
 if __name__ == "__main__":
+    guid = uuid.uuid4()
+    db.insertSetRun(guid)
     processes = []
     for size in range(23,27):
-        p = multiprocessing.Process(target=Series.search_series, args=(dataSet, 0.98, 5, size))
+        p = multiprocessing.Process(target=Series.search_series, args=(guid, dataSet, 0.98, 5, size))
         processes.append(p)
         p.start()
 
     for p in processes:
         p.join()
 
-    print("----------------------------")
+    db.endSetRun(guid)
+
+    print("----------DONE------------------")
     # print(f"Looking for series of {sizes} elements, whith a minimum shift of {minShift}.")
     # print(f"{len(posCors)} matches found with a positive correlation coefficient higher than {posCorNumber}.")
     # print(f"{len(negCors)} matches found with a negative correlation coefficient less than {posCorNumber}.")
     # print(f"Total comparisons done: {len(comparisonsDone)}.")
     # print(f"Total dup comparisons skipped: {comparisonsSkipped}.")
     # print(f"Total minShift comparisons skipped: {comparisonsSkippedMinShift}.")
-    print(f"Elapsed time: {time.time() - start_time:.4f} seconds.")
+    #print(f"Elapsed time: {time.time() - start_time:.4f} seconds.")

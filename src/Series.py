@@ -1,8 +1,8 @@
-
 import pandas as pd
 from scipy.stats import pearsonr
 import SeriesUtils as util
 import SeriesObjects as obj
+import DbWriter as db
 
 def search_series(dataSet, corNumber, minShift, size):
     print(f"running: {size}")
@@ -11,7 +11,6 @@ def search_series(dataSet, corNumber, minShift, size):
     def log(msg):
         if logging:
             print(msg)
-
 
     #validate dataSet
     if len(dataSet) <= 1:
@@ -27,7 +26,7 @@ def search_series(dataSet, corNumber, minShift, size):
     negCors = []
 
     posCorNumber = corNumber
-    negCorNumber = 0 - corNumber;
+    negCorNumber = 0 - corNumber
 
     comparisonsSkipped = 0
     comparisonsSkippedMinShift = 0
@@ -76,4 +75,4 @@ def search_series(dataSet, corNumber, minShift, size):
 
     print("")
     for cor in (posCors + negCors):
-        print(cor)
+        db.insertShiftFound(cor)

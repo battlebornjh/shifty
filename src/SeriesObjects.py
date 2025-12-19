@@ -1,3 +1,18 @@
+import decimal
+
+class TimeSeriesDaily:
+    def __init__(self, dt, symbol, open: decimal.Decimal, high: decimal.Decimal, low: decimal.Decimal, close:decimal.Decimal, volume: int):
+        self.dt = dt
+        self.symbol = symbol
+        self.open = open
+        self.high = high
+        self.low = low
+        self.close = close
+        self.volume = volume
+
+    def __repr__(self):
+        return f"TimeSeriesDaily(dt={self.dt}, symbol={self.symbol}, open={self.open}, high={self.high}, low={self.low}, close={self.close}, volume={self.volume})"
+
 class HighCorrelation:
     def __init__(self, target1, target2, shift1, shift2, size, cc, p, series1, series2):
         self.target1 = target1

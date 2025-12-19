@@ -73,6 +73,5 @@ def search_series(guid, dataSet, corNumber, minShift, size):
                         else:
                             log(f"Not enough data to evaluate target {target1} and {target2}.")
 
-    print("")
     for cor in (posCors + negCors):
         db.insertShiftFound(guid, cor)

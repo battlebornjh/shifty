@@ -13,6 +13,15 @@ class TimeSeriesDaily:
     def __repr__(self):
         return f"TimeSeriesDaily(dt={self.dt}, symbol={self.symbol}, open={self.open}, high={self.high}, low={self.low}, close={self.close}, volume={self.volume})"
 
+class SeriesSet:
+    def __init__(self, dates, symbols, data):
+        self.dates = dates
+        self.symbols = symbols
+        self.data = data
+
+    def __repr__(self):
+        return "SeriesSet -todo"
+    
 class HighCorrelation:
     def __init__(self, target1, target2, shift1, shift2, size, cc, p, series1, series2):
         self.target1 = target1

@@ -4,12 +4,15 @@ import SeriesObjects as obj
 from datetime import datetime,timezone
 import time
 import uuid
+import os
+
+POSTGRES_HOST = os.getenv("POSTGRES_HOST") or "localhost"
 
 db_params = {
     "database": "postgres",
     "user": "yourUser",
     "password": "changeit",
-    "host": "localhost",
+    "host": POSTGRES_HOST,
     "port": "5432"
 }
 

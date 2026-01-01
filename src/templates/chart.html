@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flask Chart.js Two Line Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Two-Line Chart Example</h1>
+    <div style="width: 700px; height: 400px;">
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <script>
+        const labels = JSON.parse('{{ labels | tojson | safe }}');
+        const chartData1 = JSON.parse('{{ data1 | tojson | safe }}');
+        const chartData2 = JSON.parse('{{ data2 | tojson | safe }}');
+
+        const data = {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'AAPL',
+                    data: chartData1,
+                    borderColor: 'rgb(255, 99, 132)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    yAxisID: 'y',
+                },
+                {
+                    label: 'INTC',
+                    data: chartData2,
+                    borderColor: 'rgb(54, 162, 235)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    yAxisID: 'y',
+                }
+            ]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Two Line Chart Example'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        position: 'left',
+                    },
+                }
+            },
+        };
+
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+    </script>
+</body>
+</html>

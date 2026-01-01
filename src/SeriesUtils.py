@@ -6,3 +6,5 @@ def shiftSeries(shiftAmt, size, series):
 def isArrayConstant(series):
     return len(set(series)) == 1
 
+
+

@@ -3,15 +3,17 @@ from scipy.stats import pearsonr
 import SeriesUtils as util
 import SeriesObjects as obj
 import DbWriter as db
+import sys, logging
 
-def search_series(guid, dataSet, corNumber, minShift, size):
-    print(f"running: {size}")
-    #logging = True
-    logging = False
-    def log(msg):
-        if logging:
-            print(msg)
+logging.basicConfig(
+    stream=sys.stdout,
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
+def search_series(guid, symbols, dates, dataSet, corNumber, minShift, size):
+    
     #validate dataSet
     if len(dataSet) <= 1:
         raise Exception("Size of dataSet is too small.")
@@ -33,10 +35,6 @@ def search_series(guid, dataSet, corNumber, minShift, size):
 
     comparisonsDone = [] #keep track of comparisons to avoid checking the reverse
     for shift1 in range(0, elementSize - size + 1):
-        #pct = ((progress / (elementSize - size + 1))*100)
-        #if(pct > (lastPct * 10)):
-         #   lastPct +=1
-          #  print(f"{(10 - lastPct)},", end="")
         for shift2 in range(0, elementSize - size + 1):
             for t1 in range(len(dataSet)):
                 series = []
@@ -53,12 +51,11 @@ def search_series(guid, dataSet, corNumber, minShift, size):
                     target1 = t1
                     target2 = i
                     if target1 != target2:
-                        log(f"Evaluating target {target1}: shift {shift1} / target {target2}: shift {shift2}")
                         if len(series[target1]) == len(series[target2]):
                             if util.isArrayConstant(series[target1]):
-                                log(f"Constant Array dected for target 1")
+                                logger.info(f"Constant Array dected for target 1")
                             elif util.isArrayConstant(series[target2]):
-                                log(f"Constant Array dected for target 2")
+                                logger.info(f"Constant Array dected for target 2")
                             elif (target2, shift2, target1, shift1) in comparisonsDone:
                                 comparisonsSkipped +=1
                             elif abs(shift1 - shift2) < minShift:
@@ -67,11 +64,16 @@ def search_series(guid, dataSet, corNumber, minShift, size):
                                 comparisonsDone.append((target1, shift1, target2, shift2))
                                 correlation_coefficient, p_value = pearsonr(series[target1],series[target2])
                                 if correlation_coefficient > posCorNumber:
-                                    posCors.append(obj.HighCorrelation(target1, target2, shift1, shift2, size, correlation_coefficient, p_value, shiftedSeries[target1], shiftedSeries[target2]))
+                                    highCC = obj.HighCorrelation(target1, target2, shift1, shift2, size, correlation_coefficient, p_value, shiftedSeries[target1], shiftedSeries[target2])
+                                    logger.info(f"High cc detected. {symbols[target1]} / {symbols[target2]}")
+                                    logger.info(dates[shift1:shift1 + size])
+                                    logger.info(dates[shift2:shift2 + size])
+                                    logger.info(highCC)
+                                    posCors.append(highCC)
                                 elif correlation_coefficient < negCorNumber:
                                     negCors.append(obj.HighCorrelation(target1, target2, shift1, shift2, size, correlation_coefficient, p_value, shiftedSeries[target1], shiftedSeries[target2]))
                         else:
-                            log(f"Not enough data to evaluate target {target1} and {target2}.")
+                            logger.info(f"Not enough data to evaluate target {target1} and {target2}.")
 
     for cor in (posCors + negCors):
         db.insertShiftFound(guid, cor)
